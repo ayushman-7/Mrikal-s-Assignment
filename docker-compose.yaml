@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # Frontend - React Application
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - api
+
+  # Backend API - Node.js Express Server
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/taskdb
+      - JWT_SECRET=${JWT_SECRET}
+    volumes:
+      - ./api:/app/api
+    depends_on:
+      - db
+
+  # Database - PostgreSQL
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=taskdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

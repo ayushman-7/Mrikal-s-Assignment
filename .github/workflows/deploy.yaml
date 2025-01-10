@@ -42,7 +42,7 @@ jobs:
     - name: Transfer files to EC2
       run: |
         scp -i ~/.ssh/ec2.pem -o StrictHostKeyChecking=no \
-          docker-compose.yml \
+          docker-compose.yaml \
           frontend.tar \
           api.tar \
           .env.docker \

@@ -37,7 +37,7 @@ jobs:
       run: |
         docker compose build
         docker save -o frontend.tar frontend
-        docker save -i api.tar api
+        docker save -o api.tar api
     
     - name: Transfer files to EC2
       run: |

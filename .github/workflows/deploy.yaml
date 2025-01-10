@@ -37,16 +37,23 @@ jobs:
       run: |
         docker compose build
         docker save -o frontend.tar frontend
-        docker save -o api.tar api
-    
-    - name: Transfer files to EC2
+          docker save -o api.tar api
+      
+    - name: Compress files
+      run: |
+        tar -czf app_files.tar.gz docker-compose.yaml frontend.tar api.tar .env.docker
+        
+    - name: Transfer compressed file to EC2
       run: |
         scp -i ~/.ssh/ec2.pem -o StrictHostKeyChecking=no \
-          docker-compose.yaml \
-          frontend.tar \
-          api.tar \
-          .env.docker \
+          app_files.tar.gz \
           ubuntu@${{ secrets.EC2_HOST }}:~/app/
+      
+    - name: Extract files on EC2 instance
+      run: |
+        ssh -i ~/.ssh/ec2.pem -o StrictHostKeyChecking=no \
+          ubuntu@${{ secrets.EC2_HOST }} "cd ~/app/ && tar -xzf app_files.tar.gz && rm app_files.tar.gz"
+    
     
     - name: Deploy to EC2
       run: |

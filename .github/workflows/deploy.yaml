@@ -31,13 +31,13 @@ jobs:
     - name: Install Docker Compose
       run: |
         sudo apt-get update
-        sudo apt-get install -y docker-compose-plugin
+        sudo apt-get install -y docker-compose
     
     - name: Build and push Docker images
       run: |
         docker compose -f docker-compose.yml build
         docker save -o frontend.tar frontend
-        docker save -o api.tar api
+        docker save -i api.tar api
     
     - name: Transfer files to EC2
       run: |

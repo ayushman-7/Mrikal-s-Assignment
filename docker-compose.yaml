@@ -22,6 +22,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
+    image: api
     ports:
       - "5000:5000"
     environment:

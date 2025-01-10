@@ -45,7 +45,10 @@ jobs:
         
     - name: Transfer compressed file to EC2
       run: |
-        rsync -avz -e "ssh -i ~/.ssh/ec2.pem -o StrictHostKeyChecking=no" \
+        rsync -avz --progress -e "ssh -i ~/.ssh/ec2.pem -o StrictHostKeyChecking=no" \
+          app_files.tar.gz \
+          ubuntu@${{ secrets.EC2_HOST }}:~/app/ || \
+        scp -i ~/.ssh/ec2.pem -o StrictHostKeyChecking=no \
           app_files.tar.gz \
           ubuntu@${{ secrets.EC2_HOST }}:~/app/
       
